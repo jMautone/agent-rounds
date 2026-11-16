@@ -28,15 +28,15 @@ export interface AgentTask {
 export interface AgentResult {
   /** 0 means the agent finished; contracts are still checked afterwards. */
   exitCode: number;
-  /** Reported by the agent CLI when it knows it (Claude: total_cost_usd). */
+  /** Reported by the agent CLI when it knows it (Claude: total_cost_usd; Copilot: none). */
   costUsd?: number;
   /** Short human-readable reason when exitCode is not 0. */
   error?: string;
 }
 
 /**
- * One agent CLI. v0.1 ships `mock`; `claude` (claude -p) comes next.
- * Codex and Copilot fit the same shape.
+ * One agent CLI: `mock` (deterministic), `claude` (claude -p) and
+ * `copilot` (copilot -p). Other CLIs fit the same shape.
  */
 export interface AgentAdapter {
   readonly name: string;

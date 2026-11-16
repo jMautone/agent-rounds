@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
-import { copyExampleTeam } from "./helpers.js";
+import { copyExampleTeam, fakeAgentBin } from "./helpers.js";
 
 const exec = promisify(execFile);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -12,11 +12,11 @@ const cli = path.join(root, "src", "cli.ts");
 // Absolute, because the CLI runs from a temp dir that has no node_modules.
 const tsx = import.meta.resolve("tsx");
 
-async function agentRounds(args: string[], cwd: string) {
+async function agentRounds(args: string[], cwd: string, env: NodeJS.ProcessEnv = process.env) {
   try {
     const { stdout, stderr } = await exec(process.execPath, ["--import", tsx, cli, ...args], {
       cwd,
-      env: { ...process.env, NO_COLOR: "1" },
+      env: { ...env, NO_COLOR: "1" },
     });
     return { code: 0, stdout, stderr };
   } catch (err) {
@@ -55,10 +55,44 @@ describe("cli", () => {
     expect(r.stderr).toContain("team.yaml:1:7  name: must be lowercase letters, digits and dashes");
   });
 
-  it("exits 2 for an agent that is not available yet", async () => {
+  it("exits 2 for an unknown agent", async () => {
     const { dir } = copyExampleTeam();
-    const r = await agentRounds(["run", "x", "--agent", "claude"], dir);
+    const r = await agentRounds(["run", "x", "--agent", "codex"], dir);
     expect(r.code).toBe(2);
-    expect(r.stderr).toContain("the claude adapter is not in this build yet");
+    expect(r.stderr).toContain('unknown agent "codex". Available: mock, claude, copilot.');
+  });
+
+  it.skipIf(process.platform === "win32")(
+    "runs with --agent claude and --agent copilot against fake binaries on PATH",
+    async () => {
+      const { env } = fakeAgentBin();
+      const { dir } = copyExampleTeam();
+      const claude = await agentRounds(
+        ["run", "Design a sign-up screen", "--agent", "claude"],
+        dir,
+        env,
+      );
+      expect(claude.code).toBe(0);
+      expect(claude.stdout).toContain("agent-rounds · team design · agent claude");
+      expect(claude.stdout).toMatch(
+        /✓ done: 6 roles · 6 steps · 2 review rounds · 0 broken contracts · US\$ 0\.0\d ·/,
+      );
+
+      const copilot = await agentRounds(
+        ["run", "Design a sign-up screen", "--agent", "copilot"],
+        dir,
+        env,
+      );
+      expect(copilot.code).toBe(0);
+      expect(copilot.stdout).toContain("cost not reported (copilot)");
+    },
+  );
+
+  it.skipIf(process.platform === "win32")("exits 1 when the agent binary is missing", async () => {
+    const { dir } = copyExampleTeam();
+    const env = { ...process.env, AGENT_ROUNDS_CLAUDE_BIN: "claude-not-installed" };
+    const r = await agentRounds(["run", "x", "--agent", "claude"], dir, env);
+    expect(r.code).toBe(1);
+    expect(r.stdout).toContain('agent failed: "claude-not-installed" was not found on PATH');
   });
 });

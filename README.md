@@ -2,7 +2,7 @@
 
 Run a team of coding agents where **the process is code**: every role writes only its own files, every critique ends in a verdict, and review rounds actually happen. No LLM "lead" deciding whether to skip a step.
 
-> **Status: pre-release.** The runner, the contracts and the deterministic `mock` agent work today. The Claude Code adapter (`claude -p`), the `init design` template and the npm release land in v0.1.0. See [Roadmap](#roadmap).
+> **Status: pre-release.** The runner, the contracts and three agents work today: the deterministic `mock`, Claude Code (`claude -p`) and GitHub Copilot CLI (`copilot -p`). The `init design` template and the npm release land in v0.1.0. See [Roadmap](#roadmap).
 
 ## Why
 
@@ -42,7 +42,7 @@ agent-rounds · team design · agent mock
 → runs/2026-11-14-142540-design-two-onboarding-screens-for-the/90-delivery.md
 ```
 
-The `mock` agent writes deterministic placeholder files, so you can try the whole flow without spending tokens. A full mock run is versioned in [`examples/design-team/runs/`](examples/design-team/runs/2026-11-14-onboarding-mate-and-co/90-delivery.md).
+The `mock` agent writes deterministic placeholder files, so you can try the whole flow without spending tokens. Add `--agent claude` or `--agent copilot` to run the same team with a real agent (see [Agents](#agents)). A full mock run is versioned in [`examples/design-team/runs/`](examples/design-team/runs/2026-11-14-onboarding-mate-and-co/90-delivery.md).
 
 ## How it works
 
@@ -112,6 +112,20 @@ runs/2026-11-14-142540-design-two-onboarding-screens/
 └── run.json               ← steps, verdicts, durations, cost
 ```
 
+### Agents
+
+Pick one with `--agent`. Every role in the run uses the same agent. Each step runs the agent CLI in non-interactive mode, with the run folder as its working directory and the per-step `--timeout`.
+
+| Agent     | Runs                                  | Role prompt                   | Permissions                                                                                             | Cost in `run.json`        |
+| --------- | ------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `mock`    | nothing, writes placeholders          | ignored                       | n/a                                                                                                     | `0`                       |
+| `claude`  | `claude -p … --output-format json`    | `--append-system-prompt-file` | `--permission-mode acceptEdits`, tools limited to `Read,Write,Edit,Glob,Grep`, no MCP servers, no shell | `total_cost_usd` per step |
+| `copilot` | `copilot -p … --silent --no-ask-user` | prepended to the task prompt  | `--allow-tool=read,write`, `--deny-tool=shell,url`, path checks on                                      | not reported (`null`)     |
+
+You need the CLI installed and signed in: [Claude Code](https://code.claude.com/docs/en/setup) or [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli) (or `COPILOT_GITHUB_TOKEN` in CI). To use a binary that is not on `PATH` under its usual name, set `AGENT_ROUNDS_CLAUDE_BIN` or `AGENT_ROUNDS_COPILOT_BIN`. On Windows that binary must be an `.exe` (the native installers), because agent-rounds never starts agents through a shell.
+
+Neither adapter can run shell commands, so a role cannot run tests or install packages. That is on purpose: a role writes files, and the runner checks them. Why these flags: [ADR 5](docs/decisions/0005-headless-agent-adapters.md).
+
 ### Commands
 
 | Command                        | What it does                                                                               |
@@ -135,8 +149,8 @@ Checked on 14 November 2026.
 
 ## Roadmap
 
-- **v0.1.0**: Claude Code adapter (`claude -p --output-format json`, with cost), `agent-rounds init design`, a recorded demo and the npm release.
-- **v0.2**: Codex and Copilot adapters, a different agent per role, `resume`, parallel roles, an HTML run viewer.
+- **v0.1.0**: `agent-rounds init design`, a recorded demo and the npm release.
+- **v0.2**: a Codex adapter, a different agent per role, `resume`, parallel roles, an HTML run viewer.
 - **v0.3**: run a team from a GitHub issue, with the preview on Pages and the critique in the thread.
 
 ## Development

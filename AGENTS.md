@@ -32,7 +32,10 @@ src/
 │   └── delivery.ts  ← 90-delivery.md from a fixed template
 ├── agents/
 │   ├── types.ts     ← AgentAdapter interface
-│   └── mock.ts      ← deterministic agent for tests and demos
+│   ├── mock.ts      ← deterministic agent for tests and demos
+│   ├── claude.ts    ← claude -p (headless Claude Code)
+│   ├── copilot.ts   ← copilot -p (GitHub Copilot CLI)
+│   └── process.ts   ← spawn with an argument array, stdin closed, timeout
 ├── output.ts        ← terminal lines and summary
 └── cli.ts           ← argument parsing only
 ```
@@ -46,6 +49,7 @@ src/
 - Every path from `team.yaml` is validated to stay inside its base folder before it is used.
 - Spawn agent CLIs with `execFile` or `spawn` and an argument array, never through a shell string, and always with a timeout.
 - The mock agent and `90-delivery.md` must stay deterministic: no clock, no randomness, no absolute paths in their output. The reproducibility test compares a fresh mock run with `examples/design-team/runs/` byte for byte. If you change their output on purpose, run `npm run example` and commit the result.
+- Adapter tests never call a real agent: they put `tests/fixtures/fake-agent.mjs` on `PATH` as `claude` or `copilot` (see `fakeAgentBin` in `tests/helpers.ts`).
 - Tests live in `tests/` and use vitest. Tests that need a team copy `examples/design-team` into a temp dir; they never write to the original.
 - No real company data anywhere. Examples use the fictional store "Mate & Co.".
 

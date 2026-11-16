@@ -7,6 +7,11 @@ const STATUS_LABEL: Record<RunRecord["status"], string> = {
   failed: "❌ Failed: a contract was broken or an agent failed",
 };
 
+/** False when no step reported a cost, e.g. Copilot CLI, which does not expose one. */
+export function costReported(run: Pick<RunRecord, "steps">): boolean {
+  return run.steps.length === 0 || run.steps.some((s) => s.costUsd !== null);
+}
+
 /**
  * 90-delivery.md, built from the run record with a fixed template and no LLM.
  * It leaves out dates and durations on purpose so a mock run is byte-for-byte
@@ -18,7 +23,10 @@ export function renderDelivery(run: Omit<RunRecord, "runDir">): string {
   out.push(...run.request.split("\n").map((l) => `> ${l}`), "");
   out.push(`**Status:** ${STATUS_LABEL[run.status]}  `);
   out.push(`**Agent:** ${run.agent}  `);
-  out.push(`**Cost:** US$ ${run.totalCostUsd.toFixed(2)}`, "");
+  out.push(
+    `**Cost:** ${costReported(run) ? `US$ ${run.totalCostUsd.toFixed(2)}` : "not reported by the agent"}`,
+    "",
+  );
 
   out.push("## Steps", "");
   out.push("| # | Role | Round | Result | Files |", "| --- | --- | --- | --- | --- |");

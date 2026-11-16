@@ -1,4 +1,5 @@
 import path from "node:path";
+import { costReported } from "./core/delivery.js";
 import type { RunEvent, RunRecord, StepRecord } from "./core/runner.js";
 
 /** One line per step, then a summary. Pure functions so tests can check the text. */
@@ -28,7 +29,9 @@ export function formatStep(s: StepRecord): string {
 export function formatSummary(run: RunRecord, cwd = process.cwd()): string {
   const broken = run.steps.reduce((n, s) => n + s.violations.length, 0);
   const reviewRounds = run.reviews.reduce((n, r) => n + r.rounds, 0);
-  const cost = `US$ ${run.totalCostUsd.toFixed(2)}${run.agent === "mock" ? " (mock)" : ""}`;
+  const cost = costReported(run)
+    ? `US$ ${run.totalCostUsd.toFixed(2)}${run.agent === "mock" ? " (mock)" : ""}`
+    : `cost not reported (${run.agent})`;
   const parts = [
     plural(run.roles.length, "role"),
     plural(run.steps.length, "step"),
