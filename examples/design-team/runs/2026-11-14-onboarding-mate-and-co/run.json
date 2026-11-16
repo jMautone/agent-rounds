@@ -1,0 +1,219 @@
+{
+  "version": 1,
+  "team": "design",
+  "agent": "mock",
+  "request": "Design two onboarding screens for the Mate & Co. mobile app.",
+  "status": "completed",
+  "startedAt": "2026-11-14T12:00:00.000Z",
+  "finishedAt": "2026-11-14T12:00:00.000Z",
+  "durationMs": 0,
+  "totalCostUsd": 0,
+  "roles": [
+    "research",
+    "spec",
+    "ux-critic-spec",
+    "prototype",
+    "ux-critic-prototype",
+    "design-system"
+  ],
+  "steps": [
+    {
+      "index": 1,
+      "role": "research",
+      "kind": "author",
+      "round": 1,
+      "status": "ok",
+      "verdict": null,
+      "writes": [
+        "10-research.md"
+      ],
+      "changed": [
+        "10-research.md"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 2,
+      "role": "spec",
+      "kind": "author",
+      "round": 1,
+      "status": "ok",
+      "verdict": null,
+      "writes": [
+        "20-spec.md"
+      ],
+      "changed": [
+        "20-spec.md"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 3,
+      "role": "ux-critic-spec",
+      "kind": "critic",
+      "round": 1,
+      "status": "ok",
+      "verdict": "CHANGES",
+      "writes": [
+        "30-spec-critique-1.md"
+      ],
+      "changed": [
+        "30-spec-critique-1.md"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 4,
+      "role": "spec",
+      "kind": "author",
+      "round": 2,
+      "status": "ok",
+      "verdict": null,
+      "writes": [
+        "20-spec.md"
+      ],
+      "changed": [
+        "20-spec.md"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 5,
+      "role": "ux-critic-spec",
+      "kind": "critic",
+      "round": 2,
+      "status": "ok",
+      "verdict": "APPROVED",
+      "writes": [
+        "30-spec-critique-2.md"
+      ],
+      "changed": [
+        "30-spec-critique-2.md"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 6,
+      "role": "prototype",
+      "kind": "author",
+      "round": 1,
+      "status": "ok",
+      "verdict": null,
+      "writes": [
+        "40-prototype/"
+      ],
+      "changed": [
+        "40-prototype/index.html"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 7,
+      "role": "ux-critic-prototype",
+      "kind": "critic",
+      "round": 1,
+      "status": "ok",
+      "verdict": "CHANGES",
+      "writes": [
+        "50-prototype-critique-1.md"
+      ],
+      "changed": [
+        "50-prototype-critique-1.md"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 8,
+      "role": "prototype",
+      "kind": "author",
+      "round": 2,
+      "status": "ok",
+      "verdict": null,
+      "writes": [
+        "40-prototype/"
+      ],
+      "changed": [
+        "40-prototype/index.html"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 9,
+      "role": "ux-critic-prototype",
+      "kind": "critic",
+      "round": 2,
+      "status": "ok",
+      "verdict": "APPROVED",
+      "writes": [
+        "50-prototype-critique-2.md"
+      ],
+      "changed": [
+        "50-prototype-critique-2.md"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    },
+    {
+      "index": 10,
+      "role": "design-system",
+      "kind": "author",
+      "round": 1,
+      "status": "ok",
+      "verdict": null,
+      "writes": [
+        "60-design-system.md"
+      ],
+      "changed": [
+        "60-design-system.md"
+      ],
+      "violations": [],
+      "error": null,
+      "durationMs": 0,
+      "costUsd": 0
+    }
+  ],
+  "reviews": [
+    {
+      "author": "spec",
+      "critic": "ux-critic-spec",
+      "maxRounds": 2,
+      "rounds": 2,
+      "finalVerdict": "APPROVED",
+      "withObservations": false
+    },
+    {
+      "author": "prototype",
+      "critic": "ux-critic-prototype",
+      "maxRounds": 2,
+      "rounds": 2,
+      "finalVerdict": "APPROVED",
+      "withObservations": false
+    }
+  ]
+}

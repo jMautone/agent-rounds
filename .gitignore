@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+# Runs created while trying the CLI locally. The versioned example lives in examples/.
+/runs/

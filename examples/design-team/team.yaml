@@ -1,0 +1,35 @@
+# A small design team, used by the tests and the demo.
+# Roles run top to bottom. A critic runs right after the role it reviews.
+name: design
+roles:
+  - id: research
+    prompt: roles/research.md
+    reads: [00-request.md]
+    writes: [10-research.md]
+
+  - id: spec
+    prompt: roles/ui-spec.md
+    reads: [00-request.md, 10-research.md]
+    writes: [20-spec.md]
+
+  - id: ux-critic-spec
+    prompt: roles/ux-critic.md
+    critic_of: spec
+    writes: ["30-spec-critique-{round}.md"] # quote paths with {round}
+    max_rounds: 2
+
+  - id: prototype
+    prompt: roles/prototyper.md
+    reads: [20-spec.md]
+    writes: [40-prototype/] # a folder: the role owns everything inside it
+
+  - id: ux-critic-prototype
+    prompt: roles/ux-critic.md
+    critic_of: prototype
+    reads: [20-spec.md]
+    writes: ["50-prototype-critique-{round}.md"]
+
+  - id: design-system
+    prompt: roles/design-system.md
+    reads: [20-spec.md, 40-prototype/index.html]
+    writes: [60-design-system.md]
