@@ -141,7 +141,7 @@ Checked on 14 November 2026.
 
 ## Development
 
-See [AGENTS.md](AGENTS.md). `npm run check` runs lint, types, tests and the build. Design decisions are in [`docs/decisions/`](docs/decisions/).
+agent-rounds is built spec-first with [OpenSpec](https://github.com/Fission-AI/OpenSpec): what the tool promises lives in [`openspec/specs/`](openspec/specs/), and every behavior change starts as a proposal with delta specs in `openspec/changes/` before any code. See [CONTRIBUTING.md](CONTRIBUTING.md) for the flow and [AGENTS.md](AGENTS.md) for the rules coding agents follow. `npm run check` runs lint, types, tests and the build. Design decisions are in [`docs/decisions/`](docs/decisions/).
 
 ## License
 
