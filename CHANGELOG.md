@@ -12,3 +12,6 @@ All notable changes to this project are documented here. The format follows [Kee
 - `run.json` with steps, verdicts, durations and cost, and `90-delivery.md` from a fixed template.
 - Deterministic `mock` agent and a versioned example run.
 - `agent-rounds run` and `agent-rounds validate` commands.
+- `--agent claude` runs each step with Claude Code in headless mode (`claude -p --output-format json`), with the role prompt appended to the system prompt, file tools only, and the cost of each step recorded.
+- `--agent copilot` runs each step with GitHub Copilot CLI (`copilot -p --silent --no-ask-user`), allowing only file reads and writes. Copilot does not report cost, so the summary and `90-delivery.md` say "not reported".
+- `AGENT_ROUNDS_CLAUDE_BIN` and `AGENT_ROUNDS_COPILOT_BIN` point at a binary that is not on `PATH` under its usual name.

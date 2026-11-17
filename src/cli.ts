@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { Command, InvalidArgumentError } from "commander";
+import { ClaudeAgent } from "./agents/claude.js";
+import { CopilotAgent } from "./agents/copilot.js";
 import { MockAgent } from "./agents/mock.js";
 import type { AgentAdapter } from "./agents/types.js";
 import { runTeam } from "./core/runner.js";
@@ -13,6 +15,8 @@ const EXIT_USAGE = 2;
 
 const AGENTS: Record<string, () => AgentAdapter> = {
   mock: () => new MockAgent(),
+  claude: () => new ClaudeAgent(),
+  copilot: () => new CopilotAgent(),
 };
 
 const program = new Command()
@@ -72,11 +76,6 @@ program
   });
 
 function parseAgent(value: string): string {
-  if (value === "claude") {
-    throw new InvalidArgumentError(
-      "the claude adapter is not in this build yet; use --agent mock.",
-    );
-  }
   if (!(value in AGENTS)) {
     throw new InvalidArgumentError(
       `unknown agent "${value}". Available: ${Object.keys(AGENTS).join(", ")}.`,
