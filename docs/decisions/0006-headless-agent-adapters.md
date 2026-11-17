@@ -1,4 +1,4 @@
-# 5. Real agents run headless, with file tools only
+# 6. Real agents run headless, with file tools only
 
 Date: 2026-11-16 · Status: accepted
 

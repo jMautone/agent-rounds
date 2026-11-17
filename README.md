@@ -124,7 +124,7 @@ Pick one with `--agent`. Every role in the run uses the same agent. Each step ru
 
 You need the CLI installed and signed in: [Claude Code](https://code.claude.com/docs/en/setup) or [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli) (or `COPILOT_GITHUB_TOKEN` in CI). To use a binary that is not on `PATH` under its usual name, set `AGENT_ROUNDS_CLAUDE_BIN` or `AGENT_ROUNDS_COPILOT_BIN`. On Windows that binary must be an `.exe` (the native installers), because agent-rounds never starts agents through a shell.
 
-Neither adapter can run shell commands, so a role cannot run tests or install packages. That is on purpose: a role writes files, and the runner checks them. Why these flags: [ADR 5](docs/decisions/0005-headless-agent-adapters.md).
+Neither adapter can run shell commands, so a role cannot run tests or install packages. That is on purpose: a role writes files, and the runner checks them. Why these flags: [ADR 0006](docs/decisions/0006-headless-agent-adapters.md).
 
 ### Commands
 
