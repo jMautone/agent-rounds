@@ -1,0 +1,29 @@
+schema: spec-driven
+
+context: |
+  agent-rounds is a CLI that runs a team of coding agents defined in team.yaml.
+  The process (role order, review rounds, file contracts) is plain TypeScript;
+  agents only produce content. No LLM ever decides the process (ADR 0001).
+  Stack: TypeScript strict on Node 22 (ESM), one npm package, Biome, vitest.
+  src/core never spawns processes or prints; agents are reached only through
+  the AgentAdapter interface; src/cli.ts only parses arguments.
+  Windows, macOS and Linux are first-class: paths in team.yaml and in the run
+  folder use "/", and CI runs on all three.
+  The mock agent and 90-delivery.md are deterministic (no clock, no randomness,
+  no absolute paths); a test compares a mock run with examples/ byte for byte.
+  Examples use invented data only (fictional store "Mate & Co.").
+  Write all artifacts in English.
+
+rules:
+  proposal:
+    - State what is out of scope
+    - Say whether the change needs an ADR in docs/decisions/ and why
+  specs:
+    - Every invalid team.yaml or CLI input has a scenario with the error and exit code the user sees
+    - Name contracts and verdicts exactly as the user sees them (writes-exist, APPROVED, CHANGES)
+  design:
+    - Link the ADRs the change relies on or supersedes
+  tasks:
+    - Each task group ends with `npm run check` passing
+    - Include a task to update CHANGELOG.md under Unreleased when users would notice the change
+    - If the change alters mock or delivery output on purpose, include `npm run example` and commit the result
