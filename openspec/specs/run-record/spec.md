@@ -38,11 +38,19 @@ Each step entry SHALL hold its index, role, kind (`author` or `critic`), round, 
 - **THEN** every step in `run.json` has a duration and the total cost is 0
 
 ### Requirement: 90-delivery.md from a fixed template
-When the run ends, the runner SHALL write `90-delivery.md` from a fixed template with no LLM: the request, the status, the agent, the cost, a table of steps, a table of reviews, open observations (when any review ran out of rounds), what broke (when any step failed), and links to every file. It SHALL NOT contain dates, durations or absolute paths, so the same run renders the same bytes.
+When the run ends, the runner SHALL write `90-delivery.md` from a fixed template with no LLM: the request, the status, the agent, the cost, a table of steps, a table of reviews, open observations (when any review ran out of rounds), what broke (when any step failed), and links to every file. It SHALL NOT contain dates, durations or absolute paths, so the same run renders the same bytes. When no step reported a cost, the cost line SHALL read `**Cost:** not reported by the agent`.
 
 #### Scenario: Delivery after observations
 - **WHEN** a review ends with observations
 - **THEN** the delivery shows the status "Completed with observations" and lists that review under "Open observations" with a link to the last critique
+
+#### Scenario: Cost not reported
+- **WHEN** a run with `--agent copilot` finishes
+- **THEN** `90-delivery.md` contains `**Cost:** not reported by the agent`
+
+#### Scenario: Reported cost
+- **WHEN** a run with the mock agent finishes
+- **THEN** `90-delivery.md` contains `**Cost:** US$ 0.00`
 
 ### Requirement: Mock runs are reproducible
 The `mock` agent SHALL produce the same files for the same task every time, without reading the clock, the run folder name or any randomness. By default each mock critic SHALL answer `CHANGES` in round 1 and `APPROVED` in round 2. A fresh mock run of the example team SHALL match the versioned run in `examples/design-team/runs/` byte for byte, except timings in `run.json`.

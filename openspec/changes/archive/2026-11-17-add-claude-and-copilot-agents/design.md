@@ -17,10 +17,10 @@ Agents are reached only through `AgentAdapter` (`run(task) → { exitCode, costU
 
 ## Decisions
 
-- **Headless flags, file tools only** ([ADR 0006](../../../docs/decisions/0006-headless-agent-adapters.md)). Claude: `-p … --output-format json --append-system-prompt-file --permission-mode acceptEdits --tools Read,Write,Edit,Glob,Grep --strict-mcp-config --no-session-persistence`. Copilot: `-p … --silent --no-ask-user --no-color --allow-tool=read,write --deny-tool=shell,url`. Alternative: `--dangerously-skip-permissions` / `--allow-all`; rejected because a run folder usually sits inside the user's repository.
+- **Headless flags, file tools only** ([ADR 0006](../../../../docs/decisions/0006-headless-agent-adapters.md)). Claude: `-p … --output-format json --append-system-prompt-file --permission-mode acceptEdits --tools Read,Write,Edit,Glob,Grep --strict-mcp-config --no-session-persistence`. Copilot: `-p … --silent --no-ask-user --no-color --allow-tool=read,write --deny-tool=shell,url`. Alternative: `--dangerously-skip-permissions` / `--allow-all`; rejected because a run folder usually sits inside the user's repository.
 - **The prompt goes right after `-p`.** `--tools` and `--allow-tool` take lists; a positional prompt at the end could be swallowed by them. Copilot list flags use the `=` form for the same reason.
 - **`spawn`, not `execFile`.** `claude -p` waits for piped stdin to close; `spawn` with stdin set to `ignore` avoids a hang. The helper also applies the timeout (SIGTERM, then SIGKILL after 5 s), caps captured output at 1 MB per stream, and maps ENOENT to a readable error.
-- **Verdict on the last line** ([ADR 0002](../../../docs/decisions/0002-verdict-on-the-last-line.md)), not `--json-schema`: it works the same for both CLIs and for the mock.
+- **Verdict on the last line** ([ADR 0002](../../../../docs/decisions/0002-verdict-on-the-last-line.md)), not `--json-schema`: it works the same for both CLIs and for the mock.
 - **Unreported cost is shown as unreported**, decided by whether any step has a cost, not by agent name. A `0` would read as "free", which Copilot premium requests are not.
 - **Tests use a fake binary** (`tests/fixtures/fake-agent.mjs`) copied onto a temp `PATH` as `claude` and `copilot`. It logs its arguments and writes the files the task lists. Adapters take an optional `env` and `command` so tests do not touch the real `PATH`.
 
