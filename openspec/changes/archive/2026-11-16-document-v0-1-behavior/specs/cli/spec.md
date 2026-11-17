@@ -1,0 +1,41 @@
+## ADDED Requirements
+
+### Requirement: run command
+`agent-rounds run "<request>"` SHALL load the team, run it and write the run folder. Options: `--team` (default `team.yaml`), `--agent` (default `mock`), `--runs-dir` (default `runs`) and `--timeout` in minutes per step (default 15, any positive number).
+
+#### Scenario: Mock run from the example team
+- **WHEN** the user runs `agent-rounds run "Design a sign-up screen for Mate & Co."` in a copy of the example team
+- **THEN** the command exits 0 and creates one folder under `runs/`
+
+#### Scenario: Invalid timeout
+- **WHEN** the user passes `--timeout 0` or `--timeout abc`
+- **THEN** the command exits 2 with `must be a positive number.`
+
+#### Scenario: Unknown agent
+- **WHEN** the user passes an agent name the build does not have
+- **THEN** the command exits 2 and lists the available agents
+
+### Requirement: Progress and summary lines
+While running, the CLI SHALL print the run folder, one line per finished step (with the round from round 2 on, the verdict for critics, and indented details for a failure), and a warning when a review runs out of rounds. At the end it SHALL print a summary with the number of roles, steps, review rounds, broken contracts and the total cost, followed by the path of `90-delivery.md`.
+
+#### Scenario: Step and summary lines
+- **WHEN** the example team runs with the mock agent
+- **THEN** the output includes `✓ ux-critic-spec round 1 → CHANGES`, `✓ ux-critic-spec round 2 → APPROVED` and `✓ done: 6 roles · 10 steps · 4 review rounds · 0 broken contracts · US$ 0.00 (mock)`
+
+### Requirement: validate command
+`agent-rounds validate` SHALL check a team file without running anything and print the team name, the number of roles and the number of critics. It takes `--team` (default `team.yaml`).
+
+#### Scenario: Valid team
+- **WHEN** the user runs `agent-rounds validate` next to the example `team.yaml`
+- **THEN** the command exits 0 and prints `team design, 6 roles, 2 critics`
+
+### Requirement: Exit codes
+The CLI SHALL exit 0 when a run completes, with or without observations; 1 when a contract broke, an agent failed or an unexpected error occurred; and 2 for an invalid team file or invalid arguments. Team errors SHALL be printed to stderr in the `file:line:column` format.
+
+#### Scenario: Invalid team
+- **WHEN** `team.yaml` is `name: Bad Name` with no roles
+- **THEN** the command exits 2 and stderr contains `team.yaml:1:7  name: must be lowercase letters, digits and dashes`
+
+#### Scenario: Failed run
+- **WHEN** a step breaks a contract
+- **THEN** the command prints `✗ run failed` in the summary and exits 1

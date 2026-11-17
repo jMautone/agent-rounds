@@ -53,8 +53,27 @@ src/
 - Tests live in `tests/` and use vitest. Tests that need a team copy `examples/design-team` into a temp dir; they never write to the original.
 - No real company data anywhere. Examples use the fictional store "Mate & Co.".
 
+## How work happens here: OpenSpec
+
+Behavior changes are specified before they are built ([ADR 0005](docs/decisions/0005-spec-first-with-openspec.md)). What the tool promises today is in `openspec/specs/`; read the relevant spec before touching the code it describes.
+
+- **Needs an OpenSpec change:** anything a user or a team author can observe: CLI commands, options, output or exit codes; the `team.yaml` format; contracts and verdicts; the run folder, `run.json` and `90-delivery.md`; agent adapters.
+- **Does not:** a bug fix that makes the code match an existing spec, refactors, tests, docs, dependencies, CI.
+
+The flow, with the skills in `.agents/skills/` (linked from `.claude/skills/`):
+
+1. `/openspec-propose <request>` writes `openspec/changes/<name>/`: `proposal.md`, delta specs, `design.md` when needed, `tasks.md`. Do not write feature code before the proposal and delta specs exist.
+2. `/openspec-apply-change <name>` implements the tasks. Tick each task in `tasks.md` only after its verification passes.
+3. Run `npm run check` and `npx @fission-ai/openspec@2 validate <name> --strict`.
+4. `/openspec-archive-change <name>` in the same PR, as the last commit. Then `npx @fission-ai/openspec@2 validate --all --strict` must pass, so the specs on `main` always describe `main`.
+
+Without the skills, use the CLI: `npx @fission-ai/openspec@2 new change <name>`, `instructions <artifact> --change <name>`, `status --change <name>`, `validate`, `archive <name> --yes`. `openspec/config.yaml` holds the project context and per-artifact rules the instructions include.
+
+If the request is ambiguous about behavior, write the proposal with your best reading, state the assumption in it, and let the reviewer correct the spec rather than the code.
+
 ## Changes
 
-- One change, one branch, one PR. Conventional commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`).
+- One OpenSpec change (or one fix), one branch, one PR. Conventional commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`).
 - Update `CHANGELOG.md` under "Unreleased" for anything a user would notice.
-- Add a short ADR to `docs/decisions/` when a change makes a choice someone could reasonably question later.
+- Add a short ADR to `docs/decisions/` when a change makes a choice someone could reasonably question later. A change's `design.md` covers how that change is built; the ADR records a choice that outlives it, and the design links it.
+- See [CONTRIBUTING.md](CONTRIBUTING.md) for the human view of the same flow.
